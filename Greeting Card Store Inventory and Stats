@@ -1,0 +1,41 @@
+-- Greeting card store inventory
+
+CREATE TABLE inventory (id INTEGER PRIMARY KEY, occasion TEXT, theme TEXT, cardstock_weight INTEGER, price INTEGER);
+
+INSERT INTO inventory VALUES
+(1, "get well", "floral", 90, 3.50),
+(2, "congratulations", "metallic", 90, 6.50),
+(3, "thank you", "watercolor", 110, 5.99),
+(4, "holiday", "metallic", 130, 5.99),
+(5, "wedding", "watercolor", 130, 6.99),
+(6, "holiday", "watercolor", 110, 4.25),
+(7, "encouragement", "floral", 130, 4.75),
+(8, "humor", "solid", 80, 1.99),
+(9, "get well", "watercolor", 130, 4.75),
+(10, "blank", "floral", 80, 0.99),
+(11, "blank", "watercolor", 90, 1.99),
+(12, "sympathy", "watercolor", 110, 3.99),
+(13, "congratulations", "solid", 110, 4.99),
+(14, "wedding", "calligraphy", 130, 7.50),
+(15, "sympathy", "floral", 130, 5.99);
+
+-- Order inventory by price
+SELECT *
+FROM inventory
+ORDER BY price;
+
+-- Group and count inventory by occasion
+SELECT occasion, COUNT(occasion)
+FROM inventory
+GROUP BY occasion;
+
+-- 130 cardstock weight inventory
+SELECT *
+FROM inventory
+WHERE cardstock_weight = 130;
+
+-- Cards priced above $3 with cardstock weight less than or equal to 110
+SELECT *
+FROM inventory
+WHERE cardstock_weight <= 110
+    AND price > 3;
