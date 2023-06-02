@@ -32,10 +32,12 @@ GROUP BY occasion;
 -- 130 cardstock weight inventory
 SELECT *
 FROM inventory
-WHERE cardstock_weight = 130;
+WHERE cardstock_weight = 130
+ORDER BY price;
 
 -- Cards priced above $3 with cardstock weight less than or equal to 110
 SELECT *
 FROM inventory
 WHERE cardstock_weight <= 110
-    AND price > 3;
+    AND price > 3
+ORDER BY cardstock_weight;
