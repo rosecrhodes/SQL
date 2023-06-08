@@ -1,0 +1,58 @@
+-- This project contains data downloaded from Kaggle.
+-- I began the analysis by creating a table in the RDBMS where the Spotify data would later be inserted.
+-- Then, once the data was inserted, I performed analytics on the data using SQL.
+
+-- # Creating the table:
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+song_key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+song_mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness decimal(8,7) NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL
+);
+
+-- Then I inserted the Spotify Data .csv into the table and explored the data using SQL.
+
+-- 1. How many songs does each artist have on the top 50 list, ordered from most songs to least songs?
+SELECT artist_name AS artist, COUNT(artist_name) AS total_songs
+FROM BIT_DB.Spotifydata
+GROUP BY artist
+ORDER BY total_songs DESC;
+
+-- 2. Who were the top 10 artists are by popularity?
+SELECT track_name AS track, artist_name AS artist, popularity
+FROM BIT_DB.spotifydata
+ORDER BY popularity desc
+LIMIT 10;
+
+-- 3. What is the average popularity, song key, and loudness of all songs?
+SELECT AVG(popularity) AS avg_list_popularity, AVG(song_key) AS avg_list_key, AVG(loudness) AS avg_list_loudness
+FROM BIT_DB.Spotifydata;
+
+-- 4. What is the average song duration in minutes?
+SELECT AVG(duration_ms)/60000 AS avg_dur_min
+FROM BIT_DB.Spotifydata;
+
+-- 5. What was the average popularity, danceability, and energy by artist and track?
+SELECT
+  artist_name,
+  track_name,
+  avg(popularity)
+  ,avg(danceability)
+  ,avg(energy)
+FROM BIT_DB.spotifydata
+GROUP BY artist_name, track_name;
