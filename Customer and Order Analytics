@@ -93,7 +93,7 @@ WHERE length(FebSales.orderID) = 6
 
 -- 13. Which product brought in the most revenue in January and how much revenue did it bring in total?
 SELECT Product, SUM(quantity*price) AS revenue
-FROM JanSales
+FROM BIT_DB.JanSales
 WHERE Product <> 'Product'
     AND Product <> ''
 GROUP BY Product
