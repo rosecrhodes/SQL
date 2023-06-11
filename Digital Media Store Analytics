@@ -1,0 +1,175 @@
+-- DIGITAL MEDIA STORE DATA
+  -- The following is a query of a digital media store database containing several tables.
+  -- Data was analyzed to quantify statistics about customers, sales representatives, albums, tracks, and invoices.
+
+-- 1. Show Customers (their full names, customer ID, and country) who are not in the US.
+SELECT FirstName, LastName, CustomerID, Country
+FROM customers
+WHERE Country <> 'USA';
+
+-- 2. Show only the Customers from Brazil.
+SELECT *
+FROM customers
+WHERE Country = 'Brazil';
+
+-- 3. Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+SELECT FirstName, LastName, InvoiceID, InvoiceDate, BillingCountry
+FROM invoices
+LEFT JOIN customers
+ON invoices.CustomerId = customers.CustomerId
+WHERE BillingCountry = 'Brazil';
+
+-- 4. Show the Employees who are Sales Agents (Sales Support Agent).
+SELECT *
+FROM employees
+WHERE Title = 'Sales Support Agent';
+
+-- 5. Find a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT BillingCountry
+FROM invoices;
+
+-- 6. Provide a query that shows the invoices associated with each sales agent.
+SELECT
+    employees.LastName AS 'Last Name',
+    employees.Firstname AS 'First Name',
+    invoices.InvoiceId AS 'Invoice ID'
+FROM chinook.employees 
+
+JOIN chinook.customers 
+ON customers.SupportRepId = employees.EmployeeId
+
+JOIN chinook.invoices
+ON invoices.CustomerId = customers.CustomerId;
+
+-- 7. Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+SELECT
+    employees.FirstName AS 'Rep First Name',
+    employees.Lastname AS 'Rep Last Name',
+    customers.FirstName AS 'Customer First Name',
+    customers.LastName AS 'Customer Last Name',
+    customers.Country,
+    invoices.total
+FROM chinook.employees 
+
+JOIN chinook.customers
+ON customers.SupportRepId = employees.EmployeeId
+
+JOIN chinook.Invoices
+ON invoices.CustomerId = customers.CustomerId;
+
+-- 8. Show the invoice total amount and full sales rep name for each customer.
+SELECT
+    SUM(invoices.Total) AS 'Invoice Total',
+    customers.FirstName AS 'Customer First Name',
+    customers.LastName AS 'Customer Last Name',
+    employees.FirstName AS 'Sales Rep First Name',
+    employees.LastName AS 'Sales Rep last Name'
+FROM invoices
+
+JOIN customers
+ON invoices.CustomerID = customers.CustomerId
+
+JOIN employees
+ON customers.SupportRepId = employees.EmployeeId
+
+GROUP BY customers.lastname
+ORDER BY customers.lastname;
+
+-- 9. How many Invoices were there in 2009?
+SELECT COUNT(invoiceID)
+FROM invoices;
+
+-- 10. What are the total sales for 2009?
+SELECT SUM(total) AS 'Total 2009 Sales'
+FROM invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+-- 11. What are the total sales for May 5, 2009?
+SELECT
+    InvoiceDate AS 'Invoice Date',
+    SUM(total) AS 'Total Sales'
+FROM invoices
+WHERE invoicedate LIKE '2009-05-05%'
+GROUP BY InvoiceDate;
+
+-- 12. Write a query that includes the purchased track name with each invoice line ID.
+SELECT
+    tracks.Name AS 'Track Name',
+    invoice_items.InvoiceLineID
+FROM tracks
+JOIN invoice_items
+ON tracks.TrackId = invoice_items.TrackId
+
+ORDER BY InvoiceLineID;
+
+-- 13. Write a query that includes the purchased track name AND artist name with each invoice line ID.
+SELECT
+    Name AS 'Artist',
+    Title AS 'Track',
+    invoice_items.InvoiceLineID
+FROM artists
+
+JOIN albums
+ON albums.ArtistId = artists.ArtistId
+
+JOIN tracks
+ON tracks.AlbumID = albums.AlbumId
+
+JOIN invoice_items
+ON invoice_items.TrackId = tracks.TrackId
+
+ORDER BY InvoiceLineID;
+
+-- 14. Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+SELECT
+    tracks.Name AS 'Track',
+    albums.Title AS 'Album',
+    media_types.name AS 'Media Type',
+    genres.name AS 'Genre'
+FROM tracks
+
+JOIN albums
+ON albums.AlbumId = tracks.AlbumId
+
+JOIN media_types 
+ON media_types.MediaTypeId = tracks.MediaTypeId
+
+JOIN genres
+ON genres.GenreId = tracks.GenreId;
+
+-- 15. Show the total sales made by each sales agent.
+SELECT
+    employees.FirstName AS 'First Name',
+    employees.LastName AS 'Last Name',
+    employees.Title AS 'Title',
+    ROUND(SUM(invoices.Total)) AS 'Total Sales'
+FROM employees
+
+JOIN customers
+ON customers.SupportRepId = employees.EmployeeID
+
+JOIN invoices
+ON invoices.customerID = customers.CustomerId
+
+WHERE employees.title = 'Sales Support Agent'
+GROUP BY employees.LastName;
+
+-- 16. Which sales agent made the most dollars in sales in 2009?
+SELECT
+    employees.FirstName AS 'First Name',
+    employees.LastName AS 'Last Name',
+    employees.Title AS 'Title',
+    ROUND(SUM(invoices.Total)) AS 'Total Sales'
+FROM employees
+
+JOIN customers
+ON customers.SupportRepId = employees.EmployeeID
+
+JOIN invoices
+ON invoices.customerID = customers.CustomerId
+
+WHERE employees.title = 'Sales Support Agent'
+    AND InvoiceDate LIKE '%2009%'
+GROUP BY employees.LastName
+ORDER BY ROUND(SUM(invoices.Total)) DESC
+LIMIT 1;
