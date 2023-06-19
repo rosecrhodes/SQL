@@ -1,4 +1,5 @@
 -- Greeting card store inventory
+-- Quantified statistics about customers, sales representatives, albums, tracks, and invoices.
 
 CREATE TABLE inventory (id INTEGER PRIMARY KEY, occasion TEXT, theme TEXT, cardstock_weight INTEGER, price INTEGER);
 
